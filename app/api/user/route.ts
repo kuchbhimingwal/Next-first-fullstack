@@ -1,24 +1,27 @@
-import { NextRequest } from "next/server";
-import { PrismaClient } from '@prisma/client'
-const prisma = new PrismaClient()
+import { NextRequest, NextResponse } from "next/server";
+import prisma from "@/app/db"
 
-export function GET(){
-  return Response.json({
-    email: "shubhammingi@gmail.com",
-    name: "shubham"
-  })
-}
  export async function POST(req: NextRequest){
   const body = await req.json();
-  console.log(body);
+
+  try {
+    
   await prisma.user.create({
     data:{
       username: body.username,
       password: body.password
     }
-  })
-
-  return Response.json({
+  });
+  return NextResponse.json({
     message: "you are logged in"
   })
+  } catch (error) {
+    console.log(error);
+    return NextResponse.json({
+      message: "error while loggin in",
+    },{
+      status: 411
+    })
+  }
+
  }
